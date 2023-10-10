@@ -21,10 +21,11 @@ document.addEventListener("DOMContentLoaded", function() {
     function generatePhraseKeywords(box1, box2, box3) {
         const combinedKeywords = [];
         for (let i = 0; i < box1.length; i++) {
-            let combined = `"${box1[i]}"`;
-            if (box2[i]) combined += `\n"${box1[i]} ${box2[i]}"`;
-            if (box3[i]) combined += `\n"${box1[i]} ${box2[i]} ${box3[i]}"`;
-            combinedKeywords.push(combined);
+            for (let j = 0; j < box2.length; j++) {
+                let combined = `"${box1[i]} ${box2[j]}"`;
+                if (box3[i]) combined += ` "${box3[i]}"`;
+                combinedKeywords.push(combined);
+            }
         }
         return combinedKeywords;
     }
@@ -33,8 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const combinedKeywords = [];
         for (let i = 0; i < box1.length; i++) {
             let combined = `[${box1[i]}]`;
-            if (box2[i]) combined += `\n[${box1[i]} ${box2[i]}]`;
-            if (box3[i]) combined += `\n[${box1[i]} ${box2[i]} ${box3[i]}]`;
+            if (box2[i]) combined += ` [${box2[i]}]`;
+            if (box3[i]) combined += ` [${box3[i]}]`;
             combinedKeywords.push(combined);
         }
         return combinedKeywords;
