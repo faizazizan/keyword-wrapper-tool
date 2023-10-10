@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const box3Keywords = box3Input.value.split("\n");
 
         const phraseKeywords = generatePhraseKeywords(box1Keywords, box2Keywords, box3Keywords);
-        const matchKeywords = generateMatchKeywords(box1Keywords, box2Keywords, box3Keywords);
+        const matchKeywords = generateMatchKeywords(box1Keywords, box2Keywords);
 
         phraseOutput.value = phraseKeywords.join("\n");
         matchOutput.value = matchKeywords.join("\n");
@@ -22,22 +22,40 @@ document.addEventListener("DOMContentLoaded", function() {
         const combinedKeywords = [];
         for (let i = 0; i < box1.length; i++) {
             for (let j = 0; j < box2.length; j++) {
-                let combined = `"${box1[i]} ${box2[j]}"`;
+                const combined = `"${box1[i]} ${box2[j]}"`;
                 if (box3[i]) combined += ` "${box3[i]}"`;
-                combinedKeywords.push(combined);
+                if (hasAtLeastTwoDelimiters(combined) && hasMoreThanTwoKeywords(combined)) {
+                    combinedKeywords.push(combined);
+                }
             }
         }
         return combinedKeywords;
     }
 
-    function generateMatchKeywords(box1, box2, box3) {
+    function generateMatchKeywords(box1, box2) {
         const combinedKeywords = [];
         for (let i = 0; i < box1.length; i++) {
-            let combined = `[${box1[i]}]`;
-            if (box2[i]) combined += ` [${box2[i]}]`;
-            if (box3[i]) combined += ` [${box3[i]}]`;
-            combinedKeywords.push(combined);
+            for (let j = 0; j < box2.length; j++) {
+                const combined = `[${box1[i]} ${box2[j]}]`;
+                if (hasAtLeastTwoDelimiters(combined) && hasMoreThanTwoKeywords(combined)) {
+                    combinedKeywords.push(combined);
+                }
+            }
         }
         return combinedKeywords;
+    }
+
+    function hasAtLeastTwoDelimiters(combinedString) {
+        // Split the combined string by spaces and filter out empty strings
+        const keywords = combinedString.split(" ").filter(keyword => keyword.trim() !== "");
+        // Check if there are at least two space delimiters
+        return keywords.length >= 3;
+    }
+
+    function hasMoreThanTwoKeywords(combinedString) {
+        // Split the combined string by spaces and filter out empty strings
+        const keywords = combinedString.split(" ").filter(keyword => keyword.trim() !== "");
+        // Check if there are more than two keywords
+        return keywords.length > 2;
     }
 });
